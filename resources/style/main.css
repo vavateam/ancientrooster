@@ -1,0 +1,23 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+}
+canvas {
+    display:block;
+    image-rendering: optimizeSpeed;
+    // FF 6.0+
+    image-rendering: -moz-crisp-edges;          
+    // Webkit
+    //  (Safari now, Chrome soon)
+    image-rendering: -webkit-optimize-contrast;
+    // OS X & Windows Opera (12.02+)
+    image-rendering: -o-crisp-edges;
+    // Possible future browsers.
+    image-rendering: optimize-contrast;        
+    // IE
+    -ms-interpolation-mode: nearest-neighbor;
+}
