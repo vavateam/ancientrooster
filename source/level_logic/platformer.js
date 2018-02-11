@@ -270,7 +270,7 @@ function platformer() {
             texture = this.character.sprite.texture.texture;
         context.drawImage(texture, x(this.character.x + this.character.sprite.offset.x), y(this.character.y + this.character.sprite.offset.y), width, height)
         
-        context.beginPath();
+        /*context.beginPath();
         context.strokeStyle = "#f80";
         context.lineWidth = 1;
         for (var j = 0; j < this.world.landscape.length; j++)
@@ -290,7 +290,7 @@ function platformer() {
         context.lineWidth = 1;
         context.moveTo(x(this.character.x), y(this.character.y));
         context.lineTo(x(this.character.x + this.velocity_x), y(this.character.y + this.velocity_y));
-        context.stroke();
+        context.stroke();*/
     };
     
     this.onkey = (key, state) => {
