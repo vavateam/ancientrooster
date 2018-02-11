@@ -1,4 +1,6 @@
 /* global platformer */
+/* global Image */
+/* global sprite */
 function level1() {
     var buff = new platformer();
     
@@ -61,9 +63,11 @@ function level1() {
         /*buff.character.sprite.height = 4;
         buff.character.sprite.width = 4;*/
         
-        buff.character.x = 1;
-        buff.character.y = 7.1;
-        buff.world.landscape[0] = [point(0, 7), point(3.25, 7), point(3.4, 6.5), point(4.1, 6.5), point(4.3, 6.1)];
+        buff.character.x = 4.1;
+        buff.character.y = 1.6;
+        buff.world.landscape[0] = [point(0, 7), point(3.25, 7+1e-7), point(3.4, 6.5), point(4.1, 6.5+1e-7), point(4.3, 6.1), point(4, 5.5+1e-7), point(3.5, 5), point(2.5, 5+1e-7), point(1.75, 4.75), point(1.5, 4.5+1e-7), point(2, 2.5),
+        point(2.5, 2+1e-7), point(3.5, 2), point(4, 1.5+1e-7), point(10.25, 1.5), point(10.45, 1+1e-7),
+        point(11.7, 1), point(11.75, 1.5+1e-7), point(14.5, 1.5), point(14.55, 2.5+1e-7), point(15, 3), point(17.5, 3+1e-7), point(17.5, 1.5), point(20.3, 1.5+1e-7), point(20.3, 1), point(21.7, 1+1e-7), point(21.75, 1.5), point(22.5, 1.5+1e-7)];
     };
     
     init();

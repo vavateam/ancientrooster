@@ -2,6 +2,7 @@
 /* global line */
 /* global point */
 /* global line_to_straight */
+/* global Image */
 function sprite(texture, offset, size) {
     this.texture = texture;
     function set_texture(parent, key) {
@@ -17,7 +18,13 @@ function sprite(texture, offset, size) {
 };
 function platformer() {
     //this.init = () => {};
-    
+    this.camera = {
+        position: {
+            x: 5,
+            y: 5
+        },
+        scale: 10
+    };
     
     this.textures = [];
     this.addTexture = (key, url) => {
@@ -31,11 +38,6 @@ function platformer() {
         left: false,
         right: false,
         jump: false
-    };
-    
-    this.camera = {
-        x: 0,
-        y: 0
     };
     
     this.character = {
@@ -81,7 +83,7 @@ function platformer() {
 
     this.world = {
         landscape: [[]],
-        g: 9.8, // гравитация
+        g: 5, // гравитация
         fc: 0.75, // сила трения
     };
 
@@ -99,11 +101,11 @@ function platformer() {
         var force = ({x: 0, y: -this.world.g});
         if (this.character.state === "on_ground") {
             if (this.keys.left)
-                force.x -= 300;
+                force.x -= 500;
             if (this.keys.right)
-                force.x += 300;
+                force.x += 500;
             if (this.keys.jump)
-                force.y = 80;
+                force.y = 70;
         }
         this.velocity_x = (this.character.velocity_x += force.x * delta / 4) * delta;
         this.velocity_y = (this.character.velocity_y += force.y * delta / 4) * delta;
@@ -131,8 +133,8 @@ function platformer() {
             var new_legs = line(new_pos, new_legs_pos);
             var legs_moving = line(legs_pos, new_legs_pos);
             
-            for (var j = 0; j < this.world.landscape.length; j++)
-                for (var i = 0; i < this.world.landscape[j].length - 1; i++) {
+            //for (var j = 0; j < this.world.landscape.length; j++)
+                for (var i = 0, j=0; i < this.world.landscape[j].length - 1; i++) {
                     
                     var land_segment = line(this.world.landscape[j][i], this.world.landscape[j][i + 1]);
                     var collision_coord = collision(character_path, land_segment);
@@ -191,7 +193,7 @@ function platformer() {
                         break;
                     }
                 }
-            
+                
             this.character.x = new_pos.x;
             this.character.y = new_pos.y;
         }
@@ -203,6 +205,8 @@ function platformer() {
             this.character.velocity_y *= this.world.fc;
         }
         
+        this.character.x = this.character.x - this.character.x % 0.00001;
+        this.character.y = this.character.y - this.character.y % 0.00001;
         this.character.x = Math.ceil(this.character.x * 131072) / 131072;
         this.character.y = Math.ceil(this.character.y * 131072) / 131072;
         if (this.character.velocity_x > 0)
@@ -218,15 +222,22 @@ function platformer() {
                 this.character.sprite.set_texture(this, "character_idle_" + this.character.direction);
             else
                 this.character.sprite.set_texture(this, "character_running_" + this.character.direction);
+                
     };
     
     var div = (first, second) => (first - first % second) / second;
     
     this.draw = (context, size, time) => {
+        
+        if (this.character.x - this.camera.position.x > 2)
+            this.camera.position.x = this.character.x - 2;
+        if (this.character.x - this.camera.position.x < -2)
+            this.camera.position.x = this.character.x + 2;
+        
         context.fillStyle = "#fff";
         context.fillRect(0, 0, size.width, size.height);
         var min = Math.min(size.width, size.height);
-        var multiplier = min / 20;
+        var multiplier = min / this.camera.scale;
         var offset = {
             x: (size.width - min) / 2,
             y: (size.height - min) / 2
@@ -235,8 +246,11 @@ function platformer() {
         context.fillRect(offset.x, offset.y, min, min);
         context.fillStyle = "#000";
         
-        var x = (x) => x * multiplier + offset.x;
-        var y = (y) => size.height - (y * multiplier + offset.y);
+        var cam = this.camera;
+        var x = (x) => (x - this.camera.position.x) * multiplier + offset.x + min / 2;
+        var y = (y) => size.height - ((y - this.camera.position.y) * multiplier + offset.y + min/2);
+        
+        // Спрайты
         this.sprites.forEach((element) => {
             var texture = new Image();
             if (element.texture.type === "animation")
@@ -245,10 +259,8 @@ function platformer() {
                 texture = element.texture.texture;
             context.drawImage(texture, x(element.offset.x), y(element.offset.y), element.width * multiplier, element.height * multiplier);
         });
-       
-        var cx = this.character.x;
-        var cy = this.character.y;
         
+        // Рисовка персонажа
         var width = this.character.sprite.width * multiplier;
         var height = this.character.sprite.height * multiplier;
         var texture = new Image();
